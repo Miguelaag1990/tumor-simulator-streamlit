@@ -5,65 +5,65 @@ import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
 st.set_page_config(layout="wide")
-st.title("Simulador de Progresión Tumoral Personalizada")
+st.title("Personalized Tumor Progression Simulator")
 
 st.markdown("""
-Este simulador permite explorar distintas trayectorias tumorales según combinaciones predefinidas de sensibilidad al tratamiento, plasticidad celular y estrategia terapéutica. Seleccione uno o varios escenarios y compare la evolución del tumor y sus subpoblaciones celulares.
+This simulator allows users to explore different tumor trajectories based on predefined combinations of treatment sensitivity, cellular plasticity, and therapeutic strategy. Select one or more scenarios and compare tumor evolution and its cellular subpopulations.
 
-**Leyenda de subpoblaciones celulares:**
-- **Sensible:** células que responden bien al tratamiento.
-- **Parcialmente resistente:** células que resisten parcialmente los efectos terapéuticos.
-- **Resistente:** células que no responden a la terapia estándar y tienden a proliferar.
+**Legend of cellular subpopulations:**
+- **Sensitive:** cells that respond well to treatment.
+- **Partially resistant:** cells that partially resist therapeutic effects.
+- **Resistant:** cells that do not respond to standard therapy and tend to proliferate.
 
-**Nota:** La línea discontinua representa el volumen tumoral total. El umbral clínico indica el volumen a partir del cual se recomienda intervención terapéutica intensiva.
+**Note:** The dashed line represents total tumor volume. The clinical threshold indicates the volume beyond which intensive therapeutic intervention is recommended.
 """)
 
-with st.expander("ℹ️ Preguntas frecuentes / Ayuda"):
+with st.expander("ℹ️ FAQ / Help"):
     st.markdown("""
-    **¿Qué representa cada subpoblación?**  
-    Las curvas representan la evolución de subpoblaciones celulares dentro del tumor con distinta sensibilidad al tratamiento. 
+    **What does each subpopulation represent?**  
+    The curves represent the evolution of different cellular subpopulations within the tumor, with varying sensitivity to treatment.
 
-    **¿Qué significa el umbral clínico?**  
-    Es un valor arbitrario que representa el punto en el que el volumen tumoral puede requerir un cambio en la estrategia terapéutica.
+    **What is the clinical threshold?**  
+    An arbitrary value indicating when the tumor volume may require a change in therapeutic strategy.
 
-    **¿Puedo cambiar los tratamientos?**  
-    Esta versión está diseñada con escenarios preconfigurados y tratamientos estándar. Para personalizaciones, contactar con el equipo desarrollador.
+    **Can I change treatments?**  
+    This version includes predefined scenarios and standard treatments. For customization, please contact the development team.
 
-    **¿Qué significa la plasticidad celular?**  
-    Es la capacidad de las células tumorales de cambiar entre estados (sensibles ↔ resistentes), afectando la evolución y respuesta al tratamiento.
+    **What is cellular plasticity?**  
+    It refers to the ability of tumor cells to switch states (sensitive ↔ resistant), impacting evolution and treatment response.
 
-    **¿Puedo exportar los resultados?**  
-    Próximamente se habilitará una opción para descargar los gráficos y simulaciones en PDF o CSV.
+    **Can I export results?**  
+    Options to download graphs and simulations in PDF or CSV will be available soon.
     """)
 
 scenarios = {
-    "Escenario 1: Sensible + Terapia alta": {
+    "Scenario 1: Sensitive + High therapy": {
         "mu": [0.9, 0.5, 0.1], "epsilon": 0.8, "transition": 1.0
     },
-    "Escenario 2: Parcialmente resistente + Terapia media": {
+    "Scenario 2: Partially resistant + Medium therapy": {
         "mu": [0.7, 0.4, 0.2], "epsilon": 0.5, "transition": 1.0
     },
-    "Escenario 3: Alta resistencia + Terapia baja": {
+    "Scenario 3: High resistance + Low therapy": {
         "mu": [0.4, 0.3, 0.1], "epsilon": 0.3, "transition": 1.0
     },
-    "Escenario 4: Mixto adaptado + plasticidad alta": {
+    "Scenario 4: Adaptive mix + High plasticity": {
         "mu": [0.8, 0.5, 0.25], "epsilon": 0.6, "transition": 2.0
     },
-    "Escenario 5: Control experimental": {
+    "Scenario 5: Experimental control": {
         "mu": [0.6, 0.6, 0.6], "epsilon": 0.0, "transition": 0.0
     },
-    "Escenario 6: Tumor heterogéneo + Terapia secuencial": {
+    "Scenario 6: Heterogeneous tumor + Sequential therapy": {
         "mu": [0.85, 0.6, 0.3], "epsilon": 0.9, "transition": 0.8
     },
-    "Escenario 7: Tumor adaptativo lento + Plasticidad reducida": {
+    "Scenario 7: Slow adaptive tumor + Reduced plasticity": {
         "mu": [0.75, 0.45, 0.2], "epsilon": 0.4, "transition": 0.5
     }
 }
 
 selected_scenarios = st.multiselect(
-    "Seleccione uno o más escenarios para comparar:",
+    "Select one or more scenarios to compare:",
     list(scenarios.keys()),
-    default=["Escenario 1: Sensible + Terapia alta"]
+    default=["Scenario 1: Sensitive + High therapy"]
 )
 
 t_max = 300
@@ -98,29 +98,29 @@ for key in selected_scenarios:
     )
     results[key] = sol
 
-st.subheader("Comparación de la evolución del tumor total")
+st.subheader("Comparison of Total Tumor Evolution")
 fig1, ax1 = plt.subplots(figsize=(10, 5))
 for key in selected_scenarios:
     total = np.sum(results[key].y, axis=0)
     ax1.plot(results[key].t, total, label=key)
-ax1.axhline(0.2, color='gray', linestyle='--', label='Umbral clínico')
-ax1.set_xlabel("Tiempo (días)")
-ax1.set_ylabel("Volumen tumoral total")
-ax1.set_title("Comparación entre escenarios")
+ax1.axhline(0.2, color='gray', linestyle='--', label='Clinical threshold')
+ax1.set_xlabel("Time (days)")
+ax1.set_ylabel("Total tumor volume")
+ax1.set_title("Scenario Comparison")
 ax1.legend()
 ax1.grid(True)
 st.pyplot(fig1)
 
-st.subheader("Proporción relativa de subpoblaciones en cada escenario")
+st.subheader("Relative Proportion of Subpopulations per Scenario")
 fig2, ax2 = plt.subplots(figsize=(10, 5))
 for key in selected_scenarios:
     proportions = results[key].y / np.sum(results[key].y, axis=0)
-    ax2.plot(results[key].t, proportions[0], label=f"{key} - Sensible", linestyle='-')
-    ax2.plot(results[key].t, proportions[1], label=f"{key} - Parcial", linestyle='--')
-    ax2.plot(results[key].t, proportions[2], label=f"{key} - Resistente", linestyle=':')
-ax2.set_xlabel("Tiempo (días)")
-ax2.set_ylabel("Proporción relativa")
-ax2.set_title("Composición clonal comparativa")
+    ax2.plot(results[key].t, proportions[0], label=f"{key} - Sensitive", linestyle='-')
+    ax2.plot(results[key].t, proportions[1], label=f"{key} - Partial", linestyle='--')
+    ax2.plot(results[key].t, proportions[2], label=f"{key} - Resistant", linestyle=':')
+ax2.set_xlabel("Time (days)")
+ax2.set_ylabel("Relative proportion")
+ax2.set_title("Comparative Clonal Composition")
 ax2.legend()
 ax2.grid(True)
 st.pyplot(fig2)
