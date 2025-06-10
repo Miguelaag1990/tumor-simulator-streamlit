@@ -5,35 +5,35 @@
    from scipy.integrate import solve_ivp
    
    st.set_page_config(layout="wide")
-   st.title("Simulador de Progresión Tumoral Personalizada")
+   st.title("Simulador de ProgresiÃ³n Tumoral Personalizada")
    
    st.markdown("""
-   Este simulador permite explorar distintas trayectorias tumorales según combinaciones predefinidas de sensibilidad al tratamiento, plasticidad celular y estrategia terapéutica. Seleccione uno o varios escenarios y compare la evolución del tumor y sus subpoblaciones celulares.
+   Este simulador permite explorar distintas trayectorias tumorales segÃºn combinaciones predefinidas de sensibilidad al tratamiento, plasticidad celular y estrategia terapÃ©utica. Seleccione uno o varios escenarios y compare la evoluciÃ³n del tumor y sus subpoblaciones celulares.
    
    **Leyenda de subpoblaciones celulares:**
-   - **Sensible:** células que responden bien al tratamiento.
-   - **Parcialmente resistente:** células que resisten parcialmente los efectos terapéuticos.
-   - **Resistente:** células que no responden a la terapia estándar y tienden a proliferar.
+   - **Sensible:** cÃ©lulas que responden bien al tratamiento.
+   - **Parcialmente resistente:** cÃ©lulas que resisten parcialmente los efectos terapÃ©uticos.
+   - **Resistente:** cÃ©lulas que no responden a la terapia estÃ¡ndar y tienden a proliferar.
    
-   **Nota:** La línea discontinua representa el volumen tumoral total. El umbral clínico indica el volumen a partir del cual se recomienda intervención terapéutica intensiva.
+   **Nota:** La lÃ­nea discontinua representa el volumen tumoral total. El umbral clÃ­nico indica el volumen a partir del cual se recomienda intervenciÃ³n terapÃ©utica intensiva.
    """)
    
    with st.expander("?? Preguntas frecuentes / Ayuda"):
        st.markdown("""
-       **¿Qué representa cada subpoblación?**  
-       Las curvas representan la evolución de subpoblaciones celulares dentro del tumor con distinta sensibilidad al tratamiento. 
+       **Â¿QuÃ© representa cada subpoblaciÃ³n?**  
+       Las curvas representan la evoluciÃ³n de subpoblaciones celulares dentro del tumor con distinta sensibilidad al tratamiento. 
    
-       **¿Qué significa el umbral clínico?**  
-       Es un valor arbitrario que representa el punto en el que el volumen tumoral puede requerir un cambio en la estrategia terapéutica.
+       **Â¿QuÃ© significa el umbral clÃ­nico?**  
+       Es un valor arbitrario que representa el punto en el que el volumen tumoral puede requerir un cambio en la estrategia terapÃ©utica.
    
-       **¿Puedo cambiar los tratamientos?**  
-       Esta versión está diseñada con escenarios preconfigurados y tratamientos estándar. Para personalizaciones, contactar con el equipo desarrollador.
+       **Â¿Puedo cambiar los tratamientos?**  
+       Esta versiÃ³n estÃ¡ diseÃ±ada con escenarios preconfigurados y tratamientos estÃ¡ndar. Para personalizaciones, contactar con el equipo desarrollador.
    
-       **¿Qué significa la plasticidad celular?**  
-       Es la capacidad de las células tumorales de cambiar entre estados (sensibles ? resistentes), afectando la evolución y respuesta al tratamiento.
+       **Â¿QuÃ© significa la plasticidad celular?**  
+       Es la capacidad de las cÃ©lulas tumorales de cambiar entre estados (sensibles ? resistentes), afectando la evoluciÃ³n y respuesta al tratamiento.
    
-       **¿Puedo exportar los resultados?**  
-       Próximamente se habilitará una opción para descargar los gráficos y simulaciones en PDF o CSV.
+       **Â¿Puedo exportar los resultados?**  
+       PrÃ³ximamente se habilitarÃ¡ una opciÃ³n para descargar los grÃ¡ficos y simulaciones en PDF o CSV.
        """)
    
    scenarios = {
@@ -52,7 +52,7 @@
        "Escenario 5: Control experimental": {
            "mu": [0.6, 0.6, 0.6], "epsilon": 0.0, "transition": 0.0
        },
-       "Escenario 6: Tumor heterogéneo + Terapia secuencial": {
+       "Escenario 6: Tumor heterogÃ©neo + Terapia secuencial": {
            "mu": [0.85, 0.6, 0.3], "epsilon": 0.9, "transition": 0.8
        },
        "Escenario 7: Tumor adaptativo lento + Plasticidad reducida": {
@@ -61,7 +61,7 @@
    }
    
    selected_scenarios = st.multiselect(
-       "Seleccione uno o más escenarios para comparar:",
+       "Seleccione uno o mÃ¡s escenarios para comparar:",
        list(scenarios.keys()),
        default=["Escenario 1: Sensible + Terapia alta"]
    )
@@ -98,29 +98,29 @@
        )
        results[key] = sol
    
-   st.subheader("Comparación de la evolución del tumor total")
+   st.subheader("ComparaciÃ³n de la evoluciÃ³n del tumor total")
    fig1, ax1 = plt.subplots(figsize=(10, 5))
    for key in selected_scenarios:
        total = np.sum(results[key].y, axis=0)
        ax1.plot(results[key].t, total, label=key)
-   ax1.axhline(0.2, color='gray', linestyle='--', label='Umbral clínico')
-   ax1.set_xlabel("Tiempo (días)")
+   ax1.axhline(0.2, color='gray', linestyle='--', label='Umbral clÃ­nico')
+   ax1.set_xlabel("Tiempo (dÃ­as)")
    ax1.set_ylabel("Volumen tumoral total")
-   ax1.set_title("Comparación entre escenarios")
+   ax1.set_title("ComparaciÃ³n entre escenarios")
    ax1.legend()
    ax1.grid(True)
    st.pyplot(fig1)
    
-   st.subheader("Proporción relativa de subpoblaciones en cada escenario")
+   st.subheader("ProporciÃ³n relativa de subpoblaciones en cada escenario")
    fig2, ax2 = plt.subplots(figsize=(10, 5))
    for key in selected_scenarios:
        proportions = results[key].y / np.sum(results[key].y, axis=0)
        ax2.plot(results[key].t, proportions[0], label=f"{key} - Sensible", linestyle='-')
        ax2.plot(results[key].t, proportions[1], label=f"{key} - Parcial", linestyle='--')
        ax2.plot(results[key].t, proportions[2], label=f"{key} - Resistente", linestyle=':')
-   ax2.set_xlabel("Tiempo (días)")
-   ax2.set_ylabel("Proporción relativa")
-   ax2.set_title("Composición clonal comparativa")
+   ax2.set_xlabel("Tiempo (dÃ­as)")
+   ax2.set_ylabel("ProporciÃ³n relativa")
+   ax2.set_title("ComposiciÃ³n clonal comparativa")
    ax2.legend()
    ax2.grid(True)
    st.pyplot(fig2)
