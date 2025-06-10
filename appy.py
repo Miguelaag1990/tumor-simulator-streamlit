@@ -1,6 +1,3 @@
-# Guardar el código corregido como app.py limpio, sin errores de indentación
-from pathlib import Path
-
 output_path = Path("/mnt/data/app.py")
 code = """# -*- coding: utf-8 -*-
 import streamlit as st
