@@ -1,0 +1,15 @@
+   streamlit
+   numpy
+   matplotlib
+   scipy
+   # Simulador de Progresión Tumoral (Streamlit)
+   
+   Simulador interactivo para modelar la progresión tumoral personalizada según sensibilidad al tratamiento, plasticidad celular y estrategias terapéuticas.
+   
+   ## Cómo usar
+   
+   1. Clona este repositorio.
+   2. Instala dependencias:
+   ```bash
+   pip install -r requirements.txt
+   streamlit run app.py
